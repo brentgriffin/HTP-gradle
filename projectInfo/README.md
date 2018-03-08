@@ -13,5 +13,5 @@ If your project dynamically updates the inputs and/or outputs of your tasks, you
 
 ## Usage
 1.  Copy this task (or include it) into your Gradle build file (default name is build.gradle).
-2.  "gradle projectInfo"
+2.  From command line in the same directory as your Gradle build file, RUN "gradle projectInfo"
 3.  Analyze output
