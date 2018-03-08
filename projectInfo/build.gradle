@@ -1,0 +1,57 @@
+task projectInfo {
+    //dependsOn taskName
+    group 'Diagnostic'
+    description 'Displays diagnostic information about Gradle project - i.e. Project Name, methods, task inputs and outputs'
+    def maxInputListSize = 7
+    def maxOutputListSize = 7
+    def showFullPath = true
+
+    doLast {
+        println 'MainProject Name:' + project.name
+        for(Project proj : project.getAllprojects()) {
+            println 'Project name: ' + proj.name
+            println 'Methods: ' + proj.metaClass.methods*.name.sort().unique()
+            Map<Project, Set<Task>> allTasks = project.getAllTasks(true);
+            Set<Task> taskList = allTasks[project]
+            for(Task task: taskList) {
+                println '    Task Name: ' + task.getName()
+                TaskInputs tinputs = task.getInputs()
+                if(tinputs.getHasInputs()) {
+                    try{
+                        println '        Input File Count: ' + tinputs.getFiles().getFiles().size()
+                        if(tinputs.getFiles().getFiles().size() > 0 && tinputs.getFiles().getFiles().size() < maxInputListSize) {
+                            //println '          Files: ' + tinputs.getFiles().getAsPath()
+                            println '            ---------- Inputs ----------'
+                            for(File tinFile : tinputs.getFiles().getFiles()) {
+                                if (showFullPath)
+                                    println '                ' + tinFile.getPath()
+                                else
+                                    println '                ' + tinFile.getName()
+                            }
+                        }
+                    } catch(Exception e) {
+                        println '        Input File Count: Exception - ' + e
+                    }
+                }
+                TaskOutputs toutputs = task.getOutputs()
+                if(toutputs.getHasOutput()) {
+                    try{
+                        println '        Output File Count: ' + toutputs.getFiles().getFiles().size()
+                        if(toutputs.getFiles().getFiles().size() > 0 && toutputs.getFiles().getFiles().size() < maxOutputListSize) {
+                            //println '          Files: ' + toutputs.getFiles().getAsPath()
+                            println '            ---------- Outputs ----------'
+                            for(File toutFile : toutputs.getFiles().getFiles()) {
+                                if (showFullPath)
+                                   println '                ' + toutFile.getPath()
+                                else
+                                    println '                ' + toutFile.getName()
+                            }
+                        }
+                    } catch(Exception e) {
+                        println '        Output File Count: Exception - ' + e
+                    }
+                }
+            }
+        }
+    }
+}
